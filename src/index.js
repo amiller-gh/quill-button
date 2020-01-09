@@ -1,6 +1,7 @@
 import { STYLE } from './style';
 
 const DEFAULT_TEXT = 'Button Text';
+const DEFAULT_HREF = '#';
 
 const guid = () => ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c  => (c ^ window.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
 
@@ -66,7 +67,7 @@ function makeEmbed(Quill, options) {
       node.setAttribute('tabIndex', -1);
 
       node.dataset.format = value.format || 'center';
-      node.setAttribute('href', value.href || '#');
+      node.setAttribute('href', value.href || DEFAULT_HREF);
 
       const text = document.createElement('span');
       text.classList.add('quill-button__text');
@@ -109,7 +110,6 @@ function makeEmbed(Quill, options) {
 		}
 
 		static complexify(node) {
-			console.log('complexify', !!node.querySelector('.quill-button__format'), document.activeElement);
 			if (!!node.querySelector('.quill-button__format')) { return; }
       const input = document.createElement('textarea');
       input.value = node.querySelector('.quill-button__text').textContent.trim();
@@ -118,9 +118,10 @@ function makeEmbed(Quill, options) {
       input.addEventListener('click', ButtonBlot.onInputText);
 
       const hrefInput = document.createElement('input');
-      hrefInput.setAttribute('placeholder', 'https://external-url.com');
+      hrefInput.setAttribute('placeholder', 'https://universe.app');
       hrefInput.setAttribute('type', 'url');
       hrefInput.value = node.getAttribute('href');
+      if (hrefInput.value === DEFAULT_HREF) { hrefInput.value = ''; }
       hrefInput.className = 'quill-button__href-input';
       hrefInput.addEventListener('input', ButtonBlot.onInputHref);
       hrefInput.addEventListener('click', ButtonBlot.onInputHref);
@@ -131,7 +132,7 @@ function makeEmbed(Quill, options) {
     }
 
     static onInputHref(evt) {
-      evt.target.parentElement.setAttribute('href', evt.target.value);
+      evt.target.parentElement.setAttribute('href', evt.target.value || DEFAULT_HREF);
       evt.stopImmediatePropagation();
       evt.preventDefault();
       return false;
@@ -145,7 +146,6 @@ function makeEmbed(Quill, options) {
     }
 
 		static simplify(node) {
-			console.log('simplify', !node.querySelector('.quill-button__format'), document.activeElement);
       if (!node.querySelector('.quill-button__format')) { return; }
       const text = node.querySelector('.quill-button__text');
       text.textContent = text.textContent.trim() || DEFAULT_TEXT;
@@ -279,6 +279,7 @@ export class QuillButton {
     Quill.prototype.setContents = function () {
       const quill = this;
       quill.root.addEventListener('keydown', self.handleKeyDown.bind(self, quill), true);
+      quill.root.addEventListener('paste', self.handlePaste.bind(self, quill), true);
 
 			// Force a text-change event trigger so consumers get the updated markup!
 			quill.root.addEventListener(CUSTOM_EVENT_NAME, () => {
@@ -297,7 +298,17 @@ export class QuillButton {
       return prev.apply(quill, arguments);
     }
 
-	}
+  }
+
+  handlePaste(_quill, e) {
+    if (isInsideQuillButtonBlot(e.target)) {
+      e.stopImmediatePropagation();
+      if (e.target.tagName !== 'TEXTAREA' || e.target.tagName !== 'INPUT') {
+        // Steal back paste from form inputs and allow the native behavior.
+        e.stopImmediatePropagation();
+      }
+    }
+  }
 
 	handleKeyDown(quill, e) {
 
@@ -371,7 +382,7 @@ export class QuillButton {
 
 	/* insert into the editor
 	*/
-	async insert (quill, text=DEFAULT_TEXT, href='#') {
+	async insert (quill, text=DEFAULT_TEXT, href=DEFAULT_HREF) {
 		const buttonId = guid();
 		const index = (quill.getSelection() || {}).index || this.quill.getLength();
 		quill.insertEmbed(index, 'button', {

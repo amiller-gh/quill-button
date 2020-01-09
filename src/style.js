@@ -23,6 +23,7 @@ export const STYLE = `
   width: 100%;
   width: fit-content;
   max-width: 100%;
+  z-index: 999;
 }
 
 .quill-button[data-format=full] {
@@ -60,7 +61,7 @@ export const STYLE = `
   left: 50%;
   font-weight: bold;
   transform: translateX(-50%);
-  background-color: rgba(0,0,0,.66);
+  background-color: rgba(0,0,0,.75);
   color: white;
   border-radius: 4px;
   border: 0;
@@ -77,7 +78,7 @@ export const STYLE = `
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  background-color: rgba(0,0,0,.66);
+  background-color: rgba(0,0,0,.75);
   border-radius: 4px;
   z-index: 2;
 }
