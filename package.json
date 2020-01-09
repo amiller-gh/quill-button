@@ -1,10 +1,11 @@
 {
   "name": "quill-button",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A quill editor module that enables inserting buttons into the editor",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && mkdir dist && babel src --presets=es2015 --out-dir dist",
+    "prepublish": "yarn build",
     "watch": "watch 'yarn run build' './src' --wait=0.3"
   },
   "keywords": [
