@@ -120,7 +120,7 @@ function makeEmbed(Quill, options) {
       const hrefInput = document.createElement('input');
       hrefInput.setAttribute('placeholder', 'https://external-url.com');
       hrefInput.setAttribute('type', 'url');
-      hrefInput.value = node.querySelector('.quill-button__text').getAttribute('href');
+      hrefInput.value = node.getAttribute('href');
       hrefInput.className = 'quill-button__href-input';
       hrefInput.addEventListener('input', ButtonBlot.onInputHref);
       hrefInput.addEventListener('click', ButtonBlot.onInputHref);
