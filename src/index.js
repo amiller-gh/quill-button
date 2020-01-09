@@ -10,9 +10,9 @@ function addStyleString(id) {
   node.id = id;
   node.innerHTML = STYLE;
   if (document.readyState === 'loading') {
-    return document.addEventListener('DOMContentLoaded', () => document.body.appendChild(node));
+    return document.addEventListener('DOMContentLoaded', () => document.head.appendChild(node));
   }
-  document.body.appendChild(node);
+  document.head.appendChild(node);
 }
 
 const CUSTOM_EVENT_NAME = guid('quill-button-event');
