@@ -5,7 +5,7 @@ export const STYLE = `
 
 .quill-button {
   --accent-color: #3eb0ef;
-  display: block;
+  display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
