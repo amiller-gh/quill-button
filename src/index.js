@@ -384,7 +384,11 @@ export class QuillButton {
 	*/
 	async insert (quill, text=DEFAULT_TEXT, href=DEFAULT_HREF) {
 		const buttonId = guid();
-		const index = (quill.getSelection() || {}).index || this.quill.getLength();
+		let index = (quill.getSelection() || {}).index;
+		if (!Number.isInteger(index)) {
+			index = quill.getLength();
+		}
+
 		quill.insertEmbed(index, 'button', {
       buttonId,
       text,

@@ -1,6 +1,6 @@
 {
   "name": "quill-button",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A quill editor module that enables inserting buttons into the editor",
   "main": "dist/index.js",
   "scripts": {
